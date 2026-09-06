@@ -108,24 +108,36 @@ module Insta
       puts
       display_diff(original, pending_file)
 
-      response = prompt_review_action
-      process_review_response(response, pending_file)
+      action = prompt_review_action
+      process_review_action(action, pending_file)
     end
 
-    #: () -> String
+    #: () -> Symbol
     def prompt_review_action
       puts
-      print review_prompt_line
 
-      response = $stdin.gets&.strip || "s"
-
-      if response.downcase == "h"
-        print_review_help
+      loop do
         print review_prompt_line
-        response = $stdin.gets&.strip || "s"
-      end
 
-      response.downcase
+        response = $stdin.gets&.strip || "s"
+
+        case response
+        when "h"
+          print_review_help
+        when "a"
+          break :accept
+        when "r"
+          break :reject
+        when "A"
+          break :accept_all
+        when "R"
+          break :reject_all
+        when "q"
+          break :quit
+        else
+          break :skip
+        end
+      end
     end
 
     #: () -> String
@@ -270,22 +282,22 @@ module Insta
       end
     end
 
-    #: (String, String) -> Symbol
-    def process_review_response(response, pending_file)
-      case response
-      when "a"
+    #: (Symbol, String) -> Symbol
+    def process_review_action(action, pending_file)
+      case action
+      when :accept
         accept_file(pending_file)
         :continue
-      when "r"
+      when :reject
         reject_file(pending_file)
         :continue
-      when "accept all"
+      when :accept_all
         accept_file(pending_file)
         :accept_all
-      when "reject all"
+      when :reject_all
         reject_file(pending_file)
         :reject_all
-      when "q"
+      when :quit
         :quit
       else
         puts "  #{dim("Skipped.")}\n\n"
@@ -338,26 +350,26 @@ module Insta
 
       puts Diff.diff(old_content, new_content)
 
-      response = prompt_review_action
-      process_inline_review_response(response, entry)
+      action = prompt_review_action
+      process_inline_review_action(action, entry)
     end
 
-    #: (String, Inline::pending_store_entry) -> Symbol
-    def process_inline_review_response(response, entry)
-      case response
-      when "a"
+    #: (Symbol, Inline::pending_store_entry) -> Symbol
+    def process_inline_review_action(action, entry)
+      case action
+      when :accept
         accept_inline_entry(entry)
         :continue
-      when "r"
+      when :reject
         reject_inline_entry(entry)
         :continue
-      when "accept all"
+      when :accept_all
         accept_inline_entry(entry)
         :accept_all
-      when "reject all"
+      when :reject_all
         reject_inline_entry(entry)
         :reject_all
-      when "q"
+      when :quit
         :quit
       else
         puts "  #{dim("Skipped.")}\n\n"

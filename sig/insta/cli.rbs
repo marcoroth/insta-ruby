@@ -27,8 +27,8 @@ module Insta
     # : (String) -> Symbol
     def review_single_file: (String) -> Symbol
 
-    # : () -> String
-    def prompt_review_action: () -> String
+    # : () -> Symbol
+    def prompt_review_action: () -> Symbol
 
     # : () -> String
     def review_prompt_line: () -> String
@@ -60,8 +60,8 @@ module Insta
     # : (String, String) -> void
     def display_diff: (String, String) -> void
 
-    # : (String, String) -> Symbol
-    def process_review_response: (String, String) -> Symbol
+    # : (Symbol, String) -> Symbol
+    def process_review_action: (Symbol, String) -> Symbol
 
     # : (Array[Inline::pending_store_entry]) -> void
     def review_inline_entries: (Array[Inline::pending_store_entry]) -> void
@@ -69,8 +69,8 @@ module Insta
     # : (Inline::pending_store_entry) -> Symbol
     def review_single_inline_entry: (Inline::pending_store_entry) -> Symbol
 
-    # : (String, Inline::pending_store_entry) -> Symbol
-    def process_inline_review_response: (String, Inline::pending_store_entry) -> Symbol
+    # : (Symbol, Inline::pending_store_entry) -> Symbol
+    def process_inline_review_action: (Symbol, Inline::pending_store_entry) -> Symbol
 
     # : (Inline::pending_store_entry) -> void
     def accept_inline_entry: (Inline::pending_store_entry) -> void
